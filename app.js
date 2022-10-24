@@ -43,3 +43,15 @@ app.use((err, req, res, next)=>{
 
 
 app.listen(3000)
+
+// Next.jsによるルーティングのため以下を追記
+const next = require('next');
+const dev = process.env.NODE_ENV !== 'production';
+const nextApp = next({ dev });
+
+nextApp.prepare().then(
+    err => {
+        console.error(err);
+        process.exit(1);
+    }
+)
