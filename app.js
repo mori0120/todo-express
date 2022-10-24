@@ -50,6 +50,7 @@ const dev = process.env.NODE_ENV !== 'production';
 const nextApp = next({ dev });
 
 nextApp.prepare().then(
+    () => app.get('*', nextApp.getRequestHandler()),
     err => {
         console.error(err);
         process.exit(1);
