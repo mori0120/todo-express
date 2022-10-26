@@ -35,6 +35,36 @@ app.post('/api/todos', (req, res, next)=>{
     res.status(201).json(todo)
 })
 
+// 5-1 指定されたIDのToDoを取得するためのミドルウェア
+app.use('/api/todos/:id(\\d+)', (req, res, next) => {
+    const targetId = Number(req.params.id);
+    const todo = todos.find(todo => todo.id === targetId);
+    if(!todo){
+        const err = new Error('ToDo not found');
+        err.statusCode = 404;
+        return next(err);
+    }
+    req.todo = todo;
+    next();
+})
+
+// 5-2 ToDoのCompletedの設定・解除
+app.route('/api/todos/:id(\\d+)/completed')
+    .put((req,res) => {
+        req.todo.completed = true;
+        res.json(req.todo);
+    })
+    .delete((req,res)=>{
+        req.todo.completed = false;
+        res.json(req.todo);
+    })
+
+// 5-3 ToDoの削除
+app.delete('/api/todos/:id(\\d+)', (req, res) => {
+    todos = todos.filter(todo => todo !== req.todo);
+    res.status(204).end();
+})
+
 // エラーハンドリングミドルウェア
 app.use((err, req, res, next)=>{
     console.error(err)
